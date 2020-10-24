@@ -1,25 +1,42 @@
 import * as mongoose from 'mongoose';
 import { tuple } from './tuple';
 
+const { connect, createConnection } = mongoose;
+
 if (!/^5/.test(mongoose.version)) {
   (mongoose as any).Promise = Promise;
 }
 
-(mongoose as any).connect = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve());
+export function mockConnect() {
+  (mongoose as any).connect = jest
+    .fn()
+    .mockImplementation(() => Promise.resolve());
+}
 
-(mongoose as any).createConnection = jest.fn().mockReturnValue({
-  catch() {
-    /* no op */
-  },
-  model: mongoose.model.bind(mongoose),
-  on: jest.fn(),
-  once: jest.fn(),
-  then(resolve: any) {
-    return Promise.resolve(resolve(this));
-  },
-});
+export function unmockConnect() {
+  (mongoose as any).connect = connect;
+}
+
+export function mockCreateConnection() {
+  (mongoose as any).createConnection = jest.fn().mockReturnValue({
+    catch() {
+      /* no op */
+    },
+    model: mongoose.model.bind(mongoose),
+    on: jest.fn(),
+    once: jest.fn(),
+    then(resolve: any) {
+      return Promise.resolve(resolve(this));
+    },
+  });
+}
+
+export function unmockCreateConnection() {
+  (mongoose as any).createConnection = createConnection;
+}
+
+mockConnect();
+mockCreateConnection();
 
 const ops = tuple(
   'find',
@@ -373,5 +390,7 @@ const mockModel = (model: string | mongoose.Model<any>) => {
     throw new Error('model must be a string or mongoose.Model');
   }
 };
+
+export const mockedMongoose = null; // mongoose
 
 export default mockingoose;
