@@ -1,4 +1,8 @@
 import * as mongoose from 'mongoose';
+export declare function mockConnect(): void;
+export declare function unmockConnect(): void;
+export declare function mockCreateConnection(): void;
+export declare function unmockCreateConnection(): void;
 declare const ops: ["find", "findOne", "count", "countDocuments", "estimatedDocumentCount", "distinct", "findOneAndUpdate", "findOneAndDelete", "findOneAndRemove", "findOneAndReplace", "remove", "update", "deleteOne", "deleteMany", "save", "aggregate"];
 declare type Ops = (typeof ops)[number];
 declare type ReturnFunction = (param: mongoose.Query<any> | mongoose.Aggregate<any>) => {};
@@ -41,4 +45,5 @@ declare const mockingoose: Proxy;
  * @param {string | mongoose.Model} model either a string model name, or a mongoose.Model instance
  */
 declare const mockModel: (model: string | mongoose.Model<any, {}>) => Mock;
+export declare const mockedMongoose: any;
 export default mockingoose;
